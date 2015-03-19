@@ -1,0 +1,3 @@
+input_channel = CAMERA_IMAGE
+output_channel = GREY_IMAGE
+output_format = GREY
