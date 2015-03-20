@@ -9,3 +9,11 @@ The image converter module is doing the following in each cycle:
 - **input_channel** - The module will read an image from this channel.
 - **output_channel** - The module will write the converted image into this channel.
 - **output_format** - Look into [imaging lib](https://github.com/syxolk/imaging) for supported formats and conversions.
+
+## Dependencies
+- [imaging](https://github.com/syxolk/imaging)
+
+## Recommended modules
+- [image_loader](https://github.com/syxolk/image_loader) - to convert an image loaded from local hard drive
+- [camera_importer](https://github.com/Phibedy/camera) - to convert an image after reading from a camera
+- [image_logger](https://github.com/syxolk/image_logger) - to convert an image before saved to local hard drive
