@@ -1,9 +1,0 @@
-<?xml version="1.0"?>
-<modules>
-    <module>
-        <name>image_converter</name>
-            <configPaths>
-                <path>configs/</path>
-            </configPaths>
-    </module>
-</modules>

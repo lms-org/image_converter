@@ -7,27 +7,18 @@
 bool ImageConverter::initialize() {
     config = getConfig();
 
-    outputFormat = lms::imaging::formatFromString(config->get<std::string>("output_format"));
+    outputFormat = lms::imaging::formatFromString(
+                config->get<std::string>("output_format"));
 
     if(outputFormat == lms::imaging::Format::UNKNOWN) {
         logger.error("init") << "output_format is " << outputFormat;
         return false;
     }
 
-    std::string inputChannel = config->get<std::string>("input_channel");
-    std::string outputChannel = config->get<std::string>("output_channel");
-
-    if(inputChannel.empty()) {
-        logger.error("init") << "input_channel is empty";
-        return false;
-    }
-    if(outputChannel.empty()) {
-        logger.error("init") << "output_channel is empty";
-        return false;
-    }
-
-    inputImagePtr = datamanager()->readChannel<lms::imaging::Image>(this, inputChannel);
-    outputImagePtr = datamanager()->writeChannel<lms::imaging::Image>(this, outputChannel);
+    inputImagePtr = datamanager()
+            ->readChannel<lms::imaging::Image>(this, "INPUT_IMAGE");
+    outputImagePtr = datamanager()
+            ->writeChannel<lms::imaging::Image>(this, "OUTPUT_IMAGE");
 
     return true;
 }
@@ -37,9 +28,11 @@ bool ImageConverter::deinitialize() {
 }
 
 bool ImageConverter::cycle() {
+    logger.time("conversion");
     if(! lms::imaging::convert(*inputImagePtr, *outputImagePtr, outputFormat)) {
         logger.warn("cycle") << "Could not convert to " << outputFormat;
         return false;
     }
+    logger.timeEnd("conversion");
     return true;
 }
