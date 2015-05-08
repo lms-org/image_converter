@@ -17,17 +17,17 @@ bool ImageConverter::initialize() {
     //TODO just for testing
     //Not sure how to handle multiple filters, for example gauss first -> sobel values
     //Maybe we should go for one filter per converter at first :)
-    std::vector<std::string> filters = config->getArray<std::string>("filter");
-    std::vector<void (*)(const lms::imaging::Image&,lms::imaging::Image&)> functions;
-    for(std::string filter : filters){
-        if(filter == "gauss"){
-            functions.push_back(lms::imaging::op::gauss);
-        }else if(filter == "sobelX"){
-            functions.push_back(lms::imaging::op::sobelX);
-        }else if(filter == "sobelY"){
-            functions.push_back(lms::imaging::op::sobelY);
+    std::string filterS = config->get<std::string>("filter");
+        if(filterS == "gauss"){
+             filterFunc= lms::imaging::op::gauss;
+        }else if(filterS == "sobelX"){
+            filterFunc = lms::imaging::op::sobelX;
+        }else if(filterS == "sobelY"){
+            filterFunc = lms::imaging::op::sobelY;
+        }else{
+            filterFunc = nullptr;
         }
-    }
+
 
     if(outputFormat == lms::imaging::Format::UNKNOWN) {
         logger.error("init") << "output_format is " << outputFormat;
@@ -49,6 +49,10 @@ bool ImageConverter::cycle() {
     if(! lms::imaging::convert(*inputImagePtr, *outputImagePtr, outputFormat)) {
         logger.warn("cycle") << "Could not convert to " << outputFormat;
         return false;
+    }
+    //TODO not that nice
+    if(filterFunc != nullptr){
+        filterFunc(*inputImagePtr,*outputImagePtr);
     }
     logger.timeEnd("conversion");
     return true;
