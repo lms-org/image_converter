@@ -4,6 +4,7 @@
 #include "lms/datamanager.h"
 #include "lms/imaging/converter.h"
 #include <lms/imaging/image_factory.h>
+#include "lms/imaging/warp.h"
 
 void test(){
 
@@ -24,6 +25,8 @@ bool ImageConverter::initialize() {
             filterFunc = lms::imaging::op::sobelX;
         }else if(filterS == "sobelY"){
             filterFunc = lms::imaging::op::sobelY;
+        }else if(filterS == "imageV2C"){
+            filterFunc = lms::imaging::imageV2C;
         }else{
             filterFunc = nullptr;
         }
