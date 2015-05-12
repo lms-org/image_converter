@@ -25,7 +25,7 @@ bool ImageConverter::initialize() {
             filterFunc = lms::imaging::op::sobelX;
         }else if(filterS == "sobelY"){
             filterFunc = lms::imaging::op::sobelY;
-        }else if(filterS == "imageV2C"){
+        }else if(filterS == "imageV2C" || filterS == "warp"){
             filterFunc = lms::imaging::imageV2C;
         }else{
             filterFunc = nullptr;
@@ -49,13 +49,15 @@ bool ImageConverter::deinitialize() {
 
 bool ImageConverter::cycle() {
     logger.time("conversion");
-    if(! lms::imaging::convert(*inputImagePtr, *outputImagePtr, outputFormat)) {
-        logger.warn("cycle") << "Could not convert to " << outputFormat;
-        return false;
-    }
+
     //TODO not that nice
     if(filterFunc != nullptr){
         filterFunc(*inputImagePtr,*outputImagePtr);
+    } else {
+        if(! lms::imaging::convert(*inputImagePtr, *outputImagePtr, outputFormat)) {
+            logger.warn("cycle") << "Could not convert to " << outputFormat;
+            return false;
+        }
     }
     logger.timeEnd("conversion");
     return true;
