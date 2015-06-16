@@ -6,35 +6,49 @@
 #include <lms/imaging/image_factory.h>
 #include "lms/imaging/warp.h"
 
-void test(){
-
-}
-
 bool ImageConverter::initialize() {
     config = getConfig();
 
     outputFormat = lms::imaging::formatFromString(
                 config->get<std::string>("output_format"));
-    //TODO just for testing
-    //Not sure how to handle multiple filters, for example gauss first -> sobel values
-    //Maybe we should go for one filter per converter at first :)
     std::string filterS = config->get<std::string>("filter");
-        if(filterS == "gauss"){
-             filterFunc= lms::imaging::op::gauss;
-        }else if(filterS == "sobelX"){
-            filterFunc = lms::imaging::op::sobelX;
-        }else if(filterS == "sobelY"){
-            filterFunc = lms::imaging::op::sobelY;
-        }else if(filterS == "imageV2C" || filterS == "warp"){
-            filterFunc = lms::imaging::imageV2C;
-        }else{
-            filterFunc = nullptr;
-        }
+    scaleUpFactor = config->get<int>("scaleUp", -1);
+    scaleDownFactor = config->get<int>("scaleDown", -1);
 
+    // available operations: conversion, filtering, and scaling up/down
+    if (outputFormat != lms::imaging::Format::UNKNOWN) {
+        operation = Operation::CONVERSION;
+    } else if(filterS == "gauss"){
+        filterFunc= lms::imaging::op::gauss;
+        operation = Operation::FILTER;
+    }else if(filterS == "sobelX"){
+        filterFunc = lms::imaging::op::sobelX;
+        operation = Operation::FILTER;
+    }else if(filterS == "sobelY"){
+        filterFunc = lms::imaging::op::sobelY;
+        operation = Operation::FILTER;
+    }else if(filterS == "imageV2C" || filterS == "warp"){
+        filterFunc = lms::imaging::imageV2C;
+        operation = Operation::FILTER;
+    } else if(scaleUpFactor != -1) {
+        operation = Operation::SCALEUP;
+    } else if (scaleDownFactor != -1) {
+        operation = Operation::SCALEDOWN;
+    } else {
+        // in case the given parameters are incomplete/incorrect
+        operation = Operation::NONE;
+    }
 
-    if(outputFormat == lms::imaging::Format::UNKNOWN) {
-        logger.error("init") << "output_format is " << outputFormat;
-        return false;
+    // print out used operation
+    logger.debug("init") << "Operation: " <<
+                            (operation == Operation::CONVERSION ? "CONVERSION " + formatToString(outputFormat) :
+                            operation == Operation::FILTER ? "FILTER " + filterS:
+                            operation == Operation::SCALEUP ? "SCALEUP " + std::to_string(scaleUpFactor) :
+                            operation == Operation::SCALEDOWN ? "SCALEDOWN " + std::to_string(scaleDownFactor) :
+                            "UNKNOWN/NONE");
+
+    if(operation == Operation::NONE) {
+        logger.error("init") << "unknown operation or incorrect parameters";
     }
     inputImagePtr = datamanager()
             ->readChannel<lms::imaging::Image>(this, "INPUT_IMAGE");
@@ -49,16 +63,26 @@ bool ImageConverter::deinitialize() {
 
 bool ImageConverter::cycle() {
     logger.time("conversion");
-
-    //TODO not that nice
-    if(filterFunc != nullptr){
-        filterFunc(*inputImagePtr,*outputImagePtr);
-    } else {
-        if(! lms::imaging::convert(*inputImagePtr, *outputImagePtr, outputFormat)) {
-            logger.warn("cycle") << "Could not convert to " << outputFormat;
-            return false;
-        }
+    switch(operation) {
+        case Operation::CONVERSION:
+            if(! lms::imaging::convert(*inputImagePtr, *outputImagePtr, outputFormat)) {
+                logger.warn("cycle") << "Could not convert to " << outputFormat;
+                return false;
+            }
+            break;
+        case Operation::FILTER:
+            filterFunc(*inputImagePtr, *outputImagePtr);
+            break;
+        case Operation::SCALEUP:
+            lms::imaging::scaleUp(*inputImagePtr, *outputImagePtr, scaleUpFactor);
+            break;
+        case Operation::SCALEDOWN:
+            lms::imaging::scaleDown(*inputImagePtr, *outputImagePtr, scaleDownFactor);
+            break;
+        default:
+            *outputImagePtr = *inputImagePtr;
     }
+
     logger.timeEnd("conversion");
     return true;
 }
