@@ -1,4 +1,4 @@
-set ( SOURCES 
+set ( SOURCES
 	"src/interface.cpp"
         "src/image_converter.cpp"
 )
@@ -11,4 +11,4 @@ set (HEADERS
 include_directories("include")
 
 add_library ( image_converter MODULE ${SOURCES} ${HEADERS})
-target_link_libraries(image_converter PRIVATE lms imaging)
+target_link_libraries(image_converter PRIVATE lmscore imaging)
