@@ -12,7 +12,7 @@ public:
     bool deinitialize() override;
     bool cycle() override;
 private:
-    const lms::type::ModuleConfig *config;
+    const lms::ModuleConfig *config;
 
     enum class Operation: std::uint8_t {
         NONE = 0,
