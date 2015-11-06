@@ -25,8 +25,8 @@ private:
     int scaleUpFactor;
     int scaleDownFactor;
 
-    const lms::imaging::Image *inputImagePtr;
-    lms::imaging::Image *outputImagePtr;
+    lms::ReadDataChannel<lms::imaging::Image> inputImagePtr;
+    lms::WriteDataChannel<lms::imaging::Image> outputImagePtr;
 
     void (*filterFunc)(const lms::imaging::Image&, lms::imaging::Image&);
 };
