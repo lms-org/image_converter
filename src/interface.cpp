@@ -1,7 +1,3 @@
 #include <image_converter.h>
 
-extern "C" {
-void* getInstance () {
-    return new ImageConverter();
-}
-}
+LMS_MODULE_INTERFACE(ImageConverter)

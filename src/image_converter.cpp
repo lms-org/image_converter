@@ -7,13 +7,11 @@
 #include "lms/imaging/warp.h"
 
 bool ImageConverter::initialize() {
-    config = getConfig();
-
     outputFormat = lms::imaging::formatFromString(
-                config->get<std::string>("output_format"));
-    std::string filterS = config->get<std::string>("filter");
-    scaleUpFactor = config->get<int>("scaleUp", -1);
-    scaleDownFactor = config->get<int>("scaleDown", -1);
+                config().get<std::string>("output_format"));
+    std::string filterS = config().get<std::string>("filter");
+    scaleUpFactor = config().get<int>("scaleUp", -1);
+    scaleDownFactor = config().get<int>("scaleDown", -1);
 
     // available operations: conversion, filtering, and scaling up/down
     if (outputFormat != lms::imaging::Format::UNKNOWN) {
@@ -50,10 +48,8 @@ bool ImageConverter::initialize() {
     if(operation == Operation::NONE) {
         logger.error("init") << "unknown operation or incorrect parameters";
     }
-    inputImagePtr = datamanager()
-            ->readChannel<lms::imaging::Image>(this, "INPUT_IMAGE");
-    outputImagePtr = datamanager()
-            ->writeChannel<lms::imaging::Image>(this, "OUTPUT_IMAGE");
+    inputImagePtr = readChannel<lms::imaging::Image>("INPUT_IMAGE");
+    outputImagePtr = writeChannel<lms::imaging::Image>("OUTPUT_IMAGE");
     return true;
 }
 
