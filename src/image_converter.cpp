@@ -1,7 +1,6 @@
 #include <string>
 
 #include "image_converter.h"
-#include "lms/datamanager.h"
 #include "lms/imaging/converter.h"
 #include <lms/imaging/image_factory.h>
 #include "lms/imaging/warp.h"
