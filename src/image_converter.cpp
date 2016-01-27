@@ -24,8 +24,11 @@ bool ImageConverter::initialize() {
     }else if(filterS == "sobelY"){
         filterFunc = lms::imaging::op::sobelY;
         operation = Operation::FILTER;
-    }else if(filterS == "imageV2C" || filterS == "warp"){
+    }else if(filterS == "imageV2C" || filterS == "warp") {
         filterFunc = lms::imaging::imageV2C;
+        operation = Operation::FILTER;
+    }else if(filterS == "imageD2N" || filterS == "undistort"){
+        filterFunc = lms::imaging::imageD2N;
         operation = Operation::FILTER;
     } else if(scaleUpFactor != -1) {
         operation = Operation::SCALEUP;
