@@ -4,7 +4,7 @@ class ImageConverterConan(ConanFile):
     name = "lms_image_converter"
     version = "1.0"
     settings = "os", "compiler", "build_type", "arch"
-    exports = "include/*","src/*","CMakeList.txt","configs/*","README.md"
+    exports = "include/*","src/*","CMakeLists.txt","configs/*","README.md"
     requires = "lms_imaging/1.0@lms/stable","lms_imaging_detection/1.0@lms/stable","lms/2.0@lms/stable"
     generators = "cmake"
 
