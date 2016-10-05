@@ -4,17 +4,17 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 set ( SOURCES
-	"src/interface.cpp"
-        "src/image_converter.cpp"
+    "src/interface.cpp"
+    "src/image_converter.cpp"
 )
 
 set (HEADERS
-        "include/image_converter.h"
-	${HEADERS_SHARED}
+    "include/image_converter.h"
 )
 
 include_directories("include")
 
+#set compiler flags
 if((${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang") OR (${CMAKE_CXX_COMPILER_ID} STREQUAL "GNU"))
     set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -Wall -Wextra -Wreturn-type -Wpedantic ")
 endif()
