@@ -18,3 +18,4 @@ config/
 *.autosave
 CMakeLists.txt.user
 *.pyc
+conanbuildinfo.txt
