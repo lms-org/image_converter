@@ -11,4 +11,4 @@ set (HEADERS
 include_directories("include")
 
 add_library ( image_converter MODULE ${SOURCES} ${HEADERS})
-target_link_libraries(image_converter PRIVATE lmscore imaging imaging_detection) #TODO remove imaging_detection wegen warp gebraucht
+target_link_libraries(image_converter PRIVATE lmscore imaging lms_imaging_detection) #TODO remove imaging_detection wegen warp gebraucht
