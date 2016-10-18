@@ -30,5 +30,5 @@ add_library (lms_image_converter MODULE ${SOURCES} ${HEADERS})
 target_link_libraries(lms_image_converter PRIVATE ${CONAN_LIBS}) #TODO remove imaging_detection wegen warp gebraucht
 else()
 add_library ( image_converter MODULE ${SOURCES} ${HEADERS})
-target_link_libraries(image_converter PRIVATE lmscore imaging lms_imaging_detection) #TODO remove imaging_detection wegen warp gebraucht
+target_link_libraries(image_converter PRIVATE lmscore lms_imaging lms_imaging_detection) #TODO remove imaging_detection wegen warp gebraucht
 endif(USE_CONAN)
