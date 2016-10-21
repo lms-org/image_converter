@@ -1,3 +1,5 @@
 #include <image_converter.h>
 
-LMS_MODULE_INTERFACE(ImageConverter)
+LMS_EXPORT_BEGIN
+LMS_EXPORT_MODULE(ImageConverter)
+LMS_EXPORT_END
